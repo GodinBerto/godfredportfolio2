@@ -59,7 +59,7 @@ const Hero = () => {
               </Link>
             </div>
 
-            <ul className="space-y-2 text-muted-foreground">
+            <ul className="space-y-2 pb-10 text-muted-foreground">
               <li className="flex items-center text-gray-300 gap-2">
                 <span className="text-yellow-600">✓</span> Building scalable web
                 applications
