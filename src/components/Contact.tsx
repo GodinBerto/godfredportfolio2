@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from "lucide-react";
+import Link from "next/link";
 
 const Contact = () => {
   return (
@@ -6,7 +7,7 @@ const Contact = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="max-w-4xl mx-auto text-center mb-16">
           <span className="section-label">GET IN TOUCH</span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mt-4 mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold mt-4 mb-6">
             Let's Work Together
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -19,8 +20,8 @@ const Contact = () => {
           {/* Contact Info */}
           <div className="space-y-8">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Mail className="text-accent" size={24} />
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0">
+                <Mail className="text-blue-600" size={24} />
               </div>
               <div>
                 <h4 className="font-bold mb-1">Email</h4>
@@ -34,8 +35,8 @@ const Contact = () => {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <MapPin className="text-accent" size={24} />
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center shrink-0">
+                <MapPin className="text-blue-600" size={24} />
               </div>
               <div>
                 <h4 className="font-bold mb-1">Location</h4>
@@ -46,30 +47,30 @@ const Contact = () => {
             <div className="pt-6 border-t border-border">
               <h4 className="font-bold mb-4">Follow Me</h4>
               <div className="flex gap-4">
-                <a
+                <Link
                   href="https://github.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:bg-yellow-500 hover:text-white transition-colors"
                 >
                   <Github size={20} />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="https://linkedin.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:bg-yellow-500 hover:text-white transition-colors"
                 >
                   <Linkedin size={20} />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="https://twitter.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:bg-yellow-500 hover:text-white transition-colors"
                 >
                   <Twitter size={20} />
-                </a>
+                </Link>
               </div>
             </div>
           </div>

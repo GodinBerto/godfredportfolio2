@@ -130,7 +130,7 @@ const Experience = () => {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
           <div>
             <span className="section-label">CAREER PATH</span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mt-4">
+            <h2 className="text-4xl md:text-5xl font-display font-semibold mt-4">
               Experience
             </h2>
           </div>
@@ -282,7 +282,7 @@ const Experience = () => {
         {/* Education */}
         <div className="mt-16">
           <span className="section-label">EDUCATION</span>
-          <h3 className="text-3xl font-display font-bold mt-4 mb-8">
+          <h3 className="text-3xl font-display font-semibold mt-4 mb-8">
             Academic Background
           </h3>
 
