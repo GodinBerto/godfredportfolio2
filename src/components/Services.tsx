@@ -12,7 +12,7 @@ const services = [
     icon: Server,
     title: "Backend Development",
     description:
-      "Creating robust APIs and server-side solutions with Node.js, Python, Flask, and Express.",
+      "Creating robust APIs and server-side solutions with Node.js, Python, Flask, C# and Express.",
   },
   {
     icon: Smartphone,

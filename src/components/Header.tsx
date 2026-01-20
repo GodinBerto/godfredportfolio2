@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const navLinks = [
     { name: "About", href: "#about" },
@@ -12,23 +14,47 @@ const Header = () => {
     { name: "Contact", href: "#contact" },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
+        ${isScrolled ? "bg-white shadow-sm" : "bg-transparent"}
+      `}
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-20">
-        <a href="#" className="text-2xl font-display font-bold">
-          it's <span className="text-accent">me</span>
-        </a>
+        <Link
+          href="#"
+          className="text-2xl font-display font-bold flex items-center gap-2"
+        >
+          <span
+            className="inline-block w-10 h-10 rounded-full bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: 'url("/images/profile.jpg")' }}
+          />
+          <span
+            className={`${isScrolled ? "text-gray-800" : "text-accent"} font-semibold`}
+          >
+            Godfred
+          </span>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className={`text-sm font-medium ${isScrolled ? "" : "text-accent hover:text-accent/70"} transition-colors`}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </nav>
 

@@ -1,7 +1,103 @@
 import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "./ui/sonner";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    if (e.target.name === "email") {
+      if (!validateEmail(e.target.value)) {
+        setEmailError("Please enter a valid email address.");
+      } else {
+        setEmailError("");
+      }
+    }
+  };
+
+  const verifyEmail = async (email: string) => {
+    const apiKey = "52e7c000ca394457980a5c6e3c24ea00";
+    const response = await fetch(
+      `https://emailvalidation.abstractapi.com/v1/?api_key=${apiKey}&email=${email}`,
+    );
+    const data = await response.json();
+    return data.is_valid_format.value && data.is_smtp_valid.value;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validateEmail(formData.email)) {
+      toast.error("Invalid Email", {
+        description: "Please enter a valid email address.",
+      });
+      console.error("Invalid email address.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const isRealEmail = await verifyEmail(formData.email);
+      if (!isRealEmail) {
+        setEmailError("This email address appears to be invalid.");
+        toast.error("Invalid Email", {
+          description: "This email address appears to be invalid.",
+        });
+
+        console;
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setFormData({ name: "", email: "", message: "" });
+
+        toast.success("Success", {
+          description: "Your message has been sent successfully.",
+        });
+      } else {
+        const errorData = await response.json();
+        toast.error("Error", {
+          description:
+            errorData.message || "There was an error sending your message.",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error", {
+        description: "There was an error sending your message.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -26,10 +122,10 @@ const Contact = () => {
               <div>
                 <h4 className="font-bold mb-1">Email</h4>
                 <a
-                  href="mailto:godfredquarm83@gmail.com"
-                  className="text-muted-foreground hover:text-accent transition-colors"
+                  href="mailto:godfredquarm123@gmail.com"
+                  className="text-muted-foreground hover:text-yellow-500 transition-colors"
                 >
-                  godfredquarm83@gmail.com
+                  godfredquarm123@gmail.com
                 </a>
               </div>
             </div>
@@ -48,7 +144,7 @@ const Contact = () => {
               <h4 className="font-bold mb-4">Follow Me</h4>
               <div className="flex gap-4">
                 <Link
-                  href="https://github.com"
+                  href="https://github.com/GodinBerto"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:bg-yellow-500 hover:text-white transition-colors"
@@ -56,27 +152,19 @@ const Contact = () => {
                   <Github size={20} />
                 </Link>
                 <Link
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/godfred-quarm-84b506207"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:bg-yellow-500 hover:text-white transition-colors"
                 >
                   <Linkedin size={20} />
                 </Link>
-                <Link
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:bg-yellow-500 hover:text-white transition-colors"
-                >
-                  <Twitter size={20} />
-                </Link>
               </div>
             </div>
           </div>
 
           {/* Contact Form */}
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">
                 Your Name
@@ -84,8 +172,12 @@ const Contact = () => {
               <input
                 type="text"
                 id="name"
+                name="name"
                 className="w-full px-4 py-3 bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                 placeholder="John Doe"
+                value={formData.name}
+                onChange={handleChange}
+                required
               />
             </div>
             <div>
@@ -95,8 +187,12 @@ const Contact = () => {
               <input
                 type="email"
                 id="email"
+                name="email"
                 className="w-full px-4 py-3 bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
                 placeholder="john@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
               />
             </div>
             <div>
@@ -108,16 +204,20 @@ const Contact = () => {
               </label>
               <textarea
                 id="message"
+                name="message"
                 rows={4}
                 className="w-full px-4 py-3 bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all resize-none"
                 placeholder="Tell me about your project..."
+                value={formData.message}
+                onChange={handleChange}
+                required
               />
             </div>
             <button
               type="submit"
               className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-colors hover-lift"
             >
-              Send Message
+              {loading ? "Sending..." : "Send Message"}
             </button>
           </form>
         </div>
