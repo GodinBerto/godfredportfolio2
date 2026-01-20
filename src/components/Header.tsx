@@ -70,30 +70,34 @@ const Header = () => {
           className="md:hidden p-2"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {isMenuOpen ? (
+            <X size={24} className={`${isScrolled ? "" : "text-white"}`} />
+          ) : (
+            <Menu size={24} className={`${isScrolled ? "" : "text-white"}`} />
+          )}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-20 left-0 right-0 bg-background border-b border-border">
-          <nav className="container-custom py-6 flex flex-col gap-4">
+          <nav className="container-custom py-6 px-4 flex flex-col gap-4">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
-                className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-lg text-muted-foreground hover:text-foreground transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
-            <a
+            <Link
               href="mailto:godfredquarm83@gmail.com"
               className="mt-4 w-full text-center px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium"
             >
               Let's Talk
-            </a>
+            </Link>
           </nav>
         </div>
       )}
