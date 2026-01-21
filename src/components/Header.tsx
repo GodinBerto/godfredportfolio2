@@ -23,6 +23,11 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLinkClick = () => {
+    // Close menu when a link is clicked
+    setIsMenuOpen(false);
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
@@ -58,12 +63,14 @@ const Header = () => {
           ))}
         </nav>
 
-        <a
-          href="mailto:godfredquarm83@gmail.com"
+        <Link
+          href="/files/Godfred Quarm - Full Stack Engineer.docx"
+          download="Godfred Quarm - Full Stack Engineer.docx"
+          onClick={handleLinkClick}
           className="hidden md:flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
         >
-          Let's Talk
-        </a>
+          Download CV{" "}
+        </Link>
 
         {/* Mobile Menu Button */}
         <button
@@ -93,10 +100,12 @@ const Header = () => {
               </Link>
             ))}
             <Link
-              href="mailto:godfredquarm83@gmail.com"
+              href="/files/Godfred Quarm - Full Stack Engineer.docx"
+              download="Godfred Quarm - Full Stack Engineer.docx"
+              onClick={handleLinkClick}
               className="mt-4 w-full text-center px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium"
             >
-              Let's Talk
+              Download CV{" "}
             </Link>
           </nav>
         </div>
