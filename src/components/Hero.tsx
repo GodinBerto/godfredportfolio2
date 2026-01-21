@@ -11,7 +11,7 @@ const Hero = () => {
       <div
         className="h-full w-full absolute top-0 left-0 z-10"
         style={{
-          backgroundImage: 'url("/images/bg.jpg")',
+          backgroundImage: 'url("/images/bg.webp")',
           backgroundSize: "cover",
           backgroundPosition: "center",
           transform: "rotate(180deg)",
