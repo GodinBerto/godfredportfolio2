@@ -13,9 +13,11 @@ import Services from "@/components/Services";
 import Skills from "@/components/Skills";
 import SkillsMarquee from "@/components/SkillsMarquee";
 import PageLoader from "@/components/PageLoader";
+import ChatPopup from "@/components/chatpopup";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     const handleLoad = () => {
@@ -31,9 +33,23 @@ export default function Home() {
     return () => window.removeEventListener("load", handleLoad);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "a" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setChatOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <>
       <AnimatePresence>{loading && <PageLoader />}</AnimatePresence>
+
+      {chatOpen && <ChatPopup setIsSearchOpen={setChatOpen} />}
 
       {!loading && (
         <div className="min-h-screen bg-background">
