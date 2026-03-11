@@ -1,6 +1,8 @@
 "use client";
 
+import { DownloadIcon } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { skills } from "./SkillsMarquee";
 
 interface ChatPopupProps {
   setIsSearchOpen: (isOpen: boolean) => void;
@@ -33,6 +35,17 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   },
 ];
 
+const CV_FILE_PATH = "/files/Godfred Quarm - Full Stack Engineer.docx";
+
+const triggerCvDownload = () => {
+  const link = document.createElement("a");
+  link.href = CV_FILE_PATH;
+  link.download = "Godfred Quarm - Full Stack Engineer.docx";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 const buildBotReply = (prompt: string) => {
   const text = prompt.toLowerCase();
 
@@ -41,11 +54,7 @@ const buildBotReply = (prompt: string) => {
   }
 
   if (text.includes("skill") || text.includes("stack")) {
-    return "Core strengths include Next.js, React, TypeScript, and building polished full-stack web apps.";
-  }
-
-  if (text.includes("contact") || text.includes("email")) {
-    return "Use the Contact section near the end of the page to send a direct message.";
+    return `Core strengths include ${skills.join(", ")} and building polished full-stack web apps.`;
   }
 
   if (text.includes("service")) {
@@ -54,6 +63,10 @@ const buildBotReply = (prompt: string) => {
 
   if (text.includes("available") || text.includes("hire")) {
     return "Yes, new opportunities are welcome. Share project details in the Contact section.";
+  }
+
+  if (text.includes("cv") || text.includes("resume")) {
+    return "I can share my CV here. Click the download icon below to get it.";
   }
 
   return "I can help with projects, skills, services, and contact information. Ask me anything about those.";
@@ -79,14 +92,28 @@ const wantsContactForm = (prompt: string) => {
   );
 };
 
+const wantsCvDownload = (prompt: string) => {
+  const text = prompt.toLowerCase();
+  return text.includes("cv") || text.includes("resume");
+};
+
 const isValidEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const formatContactDetailsMessage = (payload: ContactFormData) =>
+  [
+    "Submitted contact details:",
+    `Name: ${payload.name}`,
+    `Email: ${payload.email}`,
+    `Message: ${payload.message}`,
+  ].join("\n");
 
 export default function ChatPopup({ setIsSearchOpen }: ChatPopupProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [draft, setDraft] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [isCvDownloaded, setIsCvDownloaded] = useState(false);
   const [contactForm, setContactForm] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -156,10 +183,15 @@ export default function ChatPopup({ setIsSearchOpen }: ChatPopupProps) {
     }
 
     const shouldShowContactForm = wantsContactForm(trimmed);
+    const shouldDownloadCv = wantsCvDownload(trimmed);
 
     setMessages((prev) => [...prev, createMessage("user", trimmed)]);
     setDraft("");
     setIsTyping(true);
+
+    if (shouldDownloadCv) {
+      setIsCvDownloaded(true);
+    }
 
     replyTimeoutRef.current = window.setTimeout(() => {
       const botReply = shouldShowContactForm
@@ -257,15 +289,14 @@ export default function ChatPopup({ setIsSearchOpen }: ChatPopupProps) {
       }
 
       setContactForm({ name: "", email: "", message: "" });
-      setContactStatus({
-        type: "success",
-        message: "Message sent successfully.",
-      });
+      setShowContactForm(false);
+      setContactStatus({ type: "idle", message: "" });
       setMessages((prev) => [
         ...prev,
+        createMessage("user", formatContactDetailsMessage(payload)),
         createMessage(
           "bot",
-          "Thanks. Your message has been sent successfully.",
+          "Thanks. Your details have been sent successfully. You can continue chatting here.",
         ),
       ]);
     } catch {
@@ -323,7 +354,7 @@ export default function ChatPopup({ setIsSearchOpen }: ChatPopupProps) {
                   }
                 >
                   <p
-                    className={`max-w-[88%] rounded-2xl px-3 py-2 text-sm leading-relaxed sm:max-w-[80%] ${
+                    className={`max-w-[88%] whitespace-pre-line rounded-2xl px-3 py-2 text-sm leading-relaxed sm:max-w-[80%] ${
                       message.role === "user"
                         ? "rounded-br-md bg-blue-600 text-white"
                         : "rounded-bl-md bg-white text-slate-800 shadow-sm"
@@ -402,6 +433,24 @@ export default function ChatPopup({ setIsSearchOpen }: ChatPopupProps) {
                       {contactStatus.message}
                     </p>
                   )}
+                </div>
+              )}
+
+              {isCvDownloaded && (
+                <div className="flex justify-start">
+                  <p
+                    className={`max-w-[88%] whitespace-pre-line rounded-2xl px-3 py-2 text-sm leading-relaxed sm:max-w-[80%] ${"rounded-bl-none bg-white text-slate-800 shadow-sm"} flex items-center gap-2`}
+                  >
+                    Click the icon to download my CV.{" "}
+                    <button
+                      type="button"
+                      onClick={triggerCvDownload}
+                      aria-label="Download CV"
+                      className="inline-flex rounded p-1 align-middle text-slate-700 bg-blue-600 transition hover:bg-blue-400 hover:text-slate-900"
+                    >
+                      <DownloadIcon className="h-4 w-4 text-white" />
+                    </button>
+                  </p>
                 </div>
               )}
               <div ref={bottomRef} />

@@ -1,4 +1,4 @@
-const skills = [
+export const skills = [
   "HTML",
   "CSS",
   "TAILWIND",
